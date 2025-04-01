@@ -1,0 +1,33 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#terminal {
+    width: 80%;
+    height: 80%;
+    background-color: #000;
+    color: #0f0; /* Green text */
+    font-family: "Courier New", Courier, monospace;
+    font-size: 16px;
+    padding: 20px;
+    overflow: auto;
+    border: 2px solid #0f0;
+    box-shadow: 0 0 10px #0f0;
+}
+
+#output {
+    margin: 0;
+    white-space: pre-wrap;
+    animation: blink 1s infinite;
+}
+
+/* Blinking cursor effect */
+@keyframes blink {
+    50% { border-right: 2px solid #0f0; }
+}
