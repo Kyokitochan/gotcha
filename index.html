@@ -2,13 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Prey Catcher</title>
+    <title>Hacker Typer Simulator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="terminal">
-        <pre id="output">Initializing Hack Sequence... Press any key to leave.</pre>
+        <pre id="output">Initializing "Gooner Trap" Sequence... Press any key to begin.</pre>
+        <div id="password-section">
+            <p>Enter password to exit: <input type="text" id="password-input"> 
+            <button onclick="checkPassword()">Submit</button></p>
+            <p id="message" style="color: red;"></p>
+        </div>
     </div>
+    <!-- Add audio here -->
+    <audio id="hacker-audio" autoplay loop hidden>
+        <source src="0401.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
     <script src="script.js"></script>
 </body>
 </html>
