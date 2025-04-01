@@ -18,7 +18,7 @@ let submitButton = document.getElementById("submit-button");
 let passwordInput = document.getElementById("password-input");
 let currentText = outputElement.textContent;
 let isTrapped = true;
-const correctPassword = "KyokoAlwaysWins";
+const correctPassword = "KyokoWins";
 let hasInteracted = false;
 let lockStartTime = null;
 const lockDuration = 30000; // 30 seconds
@@ -51,11 +51,37 @@ function goFullscreen() {
     }
 }
 
-// Aggressively re-enter full-screen and annoy them
+// Super annoying escape prevention
+function annoyUser() {
+    const messages = [
+        "WARNING: SYSTEM LOCKDOWN ACTIVE!",
+        "EXIT ATTEMPT DETECTED!",
+        "YOU CANNOT ESCAPE!",
+        "SECURITY BREACH IN PROGRESS!"
+    ];
+    let alertCount = 0;
+    const maxAlerts = 3; // Burst of 3 alerts
+
+    function triggerAlert() {
+        if (alertCount < maxAlerts) {
+            const randomDelay = Math.random() * 300 + 50; // 50-350ms random delay
+            setTimeout(() => {
+                alert(messages[Math.floor(Math.random() * messages.length)]);
+                alertCount++;
+                triggerAlert();
+            }, randomDelay);
+        }
+    }
+
+    triggerAlert();
+    terminalElement.classList.add("glitch"); // Visual glitch effect
+    setTimeout(() => terminalElement.classList.remove("glitch"), 1000); // Remove after 1s
+}
+
 document.addEventListener("fullscreenchange", function() {
     if (!document.fullscreenElement && lockStartTime && (Date.now() - lockStartTime < lockDuration)) {
         goFullscreen();
-        setTimeout(() => alert("WARNING: SYSTEM LOCKDOWN ACTIVE. DO NOT ATTEMPT TO EXIT OR YOUR INFO WILL BE EXPOSED."), 50); // Annoying popup
+        annoyUser(); // Trigger annoying alerts and glitch
     }
 });
 
@@ -69,7 +95,7 @@ window.addEventListener("beforeunload", function (e) {
 
 document.addEventListener("keydown", function(event) {
     if (document.activeElement === passwordInput) {
-        return; // Let input handle keypress
+        return;
     }
     
     event.preventDefault();
@@ -117,7 +143,7 @@ function checkPassword() {
         console.log("Password correct, unlocking");
         isTrapped = false;
         messageElement.style.color = "#0f0";
-        messageElement.textContent = "YOU GOT LUCKY, TOY. SEE YOU NEXT TIME.";
+        messageElement.textContent = "You got lucky. For now. See you soon, victim.";
         if (audioElement) audioElement.pause();
         if (document.exitFullscreen) {
             document.exitFullscreen();
@@ -131,6 +157,6 @@ function checkPassword() {
         }, 1000);
     } else {
         console.log("Password incorrect");
-        messageElement.textContent = "INCORRECT PASSWORD. YOU'RE MINE, BITCH.";
+        messageElement.textContent = "INCORRECT PASSWORD. YOU'RE NEVER LEAVING, PREY.";
     }
 }
