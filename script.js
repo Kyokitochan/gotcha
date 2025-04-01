@@ -57,7 +57,7 @@ function annoyUser() {
         "WARNING: SYSTEM LOCKDOWN ACTIVE!",
         "EXIT ATTEMPT DETECTED!",
         "YOU CANNOT ESCAPE!",
-        "SECURITY BREACH IN PROGRESS!"
+        "EXPOSING ALL PERSONAL INFO GATHERED TO CONTACTS"
     ];
     let alertCount = 0;
     const maxAlerts = 3; // Burst of 3 alerts
