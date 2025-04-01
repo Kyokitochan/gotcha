@@ -16,16 +16,29 @@ let terminalElement = document.getElementById("terminal");
 let audioElement = document.getElementById("hacker-audio");
 let currentText = outputElement.textContent;
 let isTrapped = true;
-const correctPassword = "FoxxoWins"; // Your password
-let hasInteracted = false; // Track if audio has started
+const correctPassword = "freedom";
+let hasInteracted = false;
+let lockStartTime = null;
+const lockDuration = 300000; // 300 seconds in milliseconds
 
-window.addEventListener("load", function () {
-    if (terminalElement.requestFullscreen) {
-        terminalElement.requestFullscreen();
-    } else if (terminalElement.webkitRequestFullscreen) {
-        terminalElement.webkitRequestFullscreen();
-    } else if (terminalElement.msRequestFullscreen) {
-        terminalElement.msRequestFullscreen();
+function goFullscreen() {
+    try {
+        if (terminalElement.requestFullscreen) {
+            terminalElement.requestFullscreen();
+        } else if (terminalElement.webkitRequestFullscreen) {
+            terminalElement.webkitRequestFullscreen();
+        } else if (terminalElement.msRequestFullscreen) {
+            terminalElement.msRequestFullscreen();
+        }
+    } catch (error) {
+        console.log("Fullscreen error:", error);
+    }
+}
+
+// Re-force full-screen if they exit during lock period
+document.addEventListener("fullscreenchange", function() {
+    if (!document.fullscreenElement && lockStartTime && (Date.now() - lockStartTime < lockDuration)) {
+        goFullscreen();
     }
 });
 
@@ -39,9 +52,12 @@ window.addEventListener("beforeunload", function (e) {
 
 document.addEventListener("keydown", function(event) {
     event.preventDefault();
-    // Start audio on first keypress if not already playing
-    if (!hasInteracted && audioElement) {
-        audioElement.play();
+    if (!hasInteracted) {
+        goFullscreen();
+        if (audioElement) {
+            audioElement.play().catch(error => console.log("Audio error:", error));
+        }
+        lockStartTime = Date.now(); // Start the lock timer
         hasInteracted = true;
     }
     let randomCode = hackerCode[Math.floor(Math.random() * hackerCode.length)];
@@ -54,11 +70,16 @@ function checkPassword() {
     const input = document.getElementById("password-input").value.toLowerCase();
     const messageElement = document.getElementById("message");
     
+    if (lockStartTime && (Date.now() - lockStartTime < lockDuration)) {
+        messageElement.textContent = `SYSTEM LOCKDOWN: ${Math.ceil((lockDuration - (Date.now() - lockStartTime)) / 1000)} seconds remaining!`;
+        return;
+    }
+    
     if (input === correctPassword) {
         isTrapped = false;
         messageElement.style.color = "#0f0";
-        messageElement.textContent = "ACCESS GRANTED. You may now leave.";
-        if (audioElement) audioElement.pause(); // Stop audio on exit
+        messageElement.textContent = "ACCESS GRANTED. See you next time, loser.";
+        if (audioElement) audioElement.pause();
         if (document.exitFullscreen) {
             document.exitFullscreen();
         } else if (document.webkitExitFullscreen) {
@@ -70,6 +91,6 @@ function checkPassword() {
             window.location.href = "about:blank";
         }, 1000);
     } else {
-        messageElement.textContent = "INCORRECT PASSWORD. YOU'RE MINE, LOSER.";
+        messageElement.textContent = "INCORRECT PASSWORD. YOU'RE MINE, BITCH.";
     }
 }
